@@ -1,0 +1,8 @@
+cov-core==1.15.0
+coverage==3.7.1
+py==1.4.26
+pytest==2.6.4
+pytest-cov==1.8.1
+redis==2.10.3
+selenium==2.44.0
+splinter==0.7.0
