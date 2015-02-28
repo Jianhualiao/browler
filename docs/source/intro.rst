@@ -53,12 +53,4 @@ Configuration
 :filters: ``(list)`` filters out any links that match the following regular expressions compiled with ``re.complile``
 
 
-what
-    Definition lists associate a term with a definition.
-
-how
-    The term is a one-line phrase, and the definition is one
-    or more paragraphs or body elements, indented relative to
-    the term.
-
 
