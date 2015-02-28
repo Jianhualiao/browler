@@ -1,4 +1,4 @@
-__author__ = 'brad5985'
+__author__ = 'brady-vitrano'
 __version__ = '0.1.2'
 # Temporary Fix
 try:
