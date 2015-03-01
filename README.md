@@ -1,5 +1,7 @@
 # Selenium Based Web Crawler
 
+ReadTheDocs - http://browler.readthedocs.org/en/latest/
+
 ## Requirements
 
 * redis `brew install redis`
