@@ -7,7 +7,7 @@ import time
 import sys
 import logging
 from splinter import Browser
-
+from splinter.request_handler.status_code import HttpResponseError
 
 class Queue(object):
     pass
@@ -77,10 +77,20 @@ class Worker(multiprocessing.Process):
             try:
                 page = Page(self.crawler, browser)
                 page.url = url
-                browser.visit(url)
+                try:
+                    browser.visit(url)
+                except HttpResponseError as e:
+                    self.crawler.logger.info('%s:httpError:%s:%s', self.name, url, str(e))
+
                 self.crawler.queue.visited(page.url)
-                page.visited = browser.url
+                # if the page fails to load 'about:blank' is returned as the browser.url
+                if browser.status_code.code != 404:
+                    page.visited = browser.url
+                else:
+                    page.visited = url
+
                 self.crawler.queue.visited(page.visited)
+
                 for script in self.crawler.scripts:
                     browser.driver.execute_script(script)
                 # add actual visited url to prevent redirect visits
@@ -94,8 +104,11 @@ class Worker(multiprocessing.Process):
                             continue
                 if self.crawler.allowed(page.visited):
                     links = page.links()
-                    filtered = self.crawler.filter(links)
-                    self.crawler.queue.add(*filtered)
+                    # links may be 'empty' no need to process further
+                    if len(links) > 0:
+                        filtered = self.crawler.filter(links)
+                        #sadd throws an error when filtered is ()
+                        self.crawler.queue.add(*filtered)
             except Exception as e:
                 self.crawler.logger.info('%s:failed:%s:%s', self.name, url, str(e))
                 continue
