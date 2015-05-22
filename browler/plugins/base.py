@@ -15,3 +15,19 @@ class Plugin(object):
 
     def shutdown(self, crawler):
         pass
+
+    def before_threads(self, context):
+        """
+        Global Startup hook
+        :param context:
+        :return:
+        """
+        pass
+
+    def after_threads(self, context):
+        """
+        Global Shutdown hook
+        :param context:
+        :return:
+        """
+        pass

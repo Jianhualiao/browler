@@ -44,6 +44,18 @@ Here is an example of how to save a copy of all the urls crawled with a multipro
             """
             self.stream.close()
 
+        def before_threads(self, context):
+            """
+            run before workers start
+            """
+            pass
+
+        def after_threads(self, context):
+            """
+            run after workers complete
+            """
+            self.stream.close()
+
 
 
 ------------------------

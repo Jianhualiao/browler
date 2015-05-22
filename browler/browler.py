@@ -165,12 +165,23 @@ class Browler(object):
         self.lock = lock
         self.queue = queue
 
+        for plugin in self.plugins:
+            context = Context()
+            context.crawler = self
+            plugin.before_threads(context)
+
         workers = [Worker(self) for _ in range(self.processes)]
         for worker in workers:
             worker.start()
 
         for worker in workers:
             worker.join()
+
+        for plugin in self.plugins:
+            context = Context()
+            context.crawler = self
+            plugin.after_threads(context)
+
         queue.cleanup()
 
     def allowed(self, url):
