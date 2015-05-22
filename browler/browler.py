@@ -66,6 +66,11 @@ class Worker(multiprocessing.Process):
 
         visits = 0
         max_visits = self.crawler.limit
+        for plugin in self.crawler.plugins:
+            context = Context()
+            context.crawler = self.crawler
+            plugin.startup(context)
+
         while True:
             url = self.crawler.queue.next()
             if not url:
@@ -103,6 +108,12 @@ class Worker(multiprocessing.Process):
             visits += 1
             if visits >= max_visits:
                 break
+
+        for plugin in self.crawler.plugins:
+            context = Context()
+            context.crawler = self.crawler
+            plugin.shutdown(context)
+
         browser.quit()
 
     def clear_elapsed_time(self):
@@ -153,10 +164,6 @@ class Browler(object):
         self.logger = logging
         self.lock = lock
         self.queue = queue
-        for plugin in self.plugins:
-            context = Context()
-            context.crawler = self
-            plugin.startup(context)
 
         workers = [Worker(self) for _ in range(self.processes)]
         for worker in workers:
